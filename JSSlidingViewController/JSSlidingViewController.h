@@ -240,6 +240,10 @@ extern  CGFloat      const JSSlidingViewControllerDropShadowImageWidth;
 // Called after the slider is closed (programmatically or manually)
 - (void)slidingViewControllerDidClose:(JSSlidingViewController *)viewController;
 
+// - (void)slidingViewControllerIsOpening:(JSSlidingViewController *)viewController progress:(CGFloat)progress;
+// Called during a live-scrolling of the sidebar. Returns a value between 0.0 and 1.0.
+- (void)slidingViewControllerIsOpening:(JSSlidingViewController *)viewController progress:(CGFloat)progress;
+
 // - (NSUInteger)supportedInterfaceOrientationsForSlidingViewController:(JSSlidingViewController *)viewController;
 // Unless you override, JSSlidingViewController uses UIInterfaceOrientationMaskPortrait for iPhone and all 4 orientations for iPad.
 - (NSUInteger)supportedInterfaceOrientationsForSlidingViewController:(JSSlidingViewController *)viewController;

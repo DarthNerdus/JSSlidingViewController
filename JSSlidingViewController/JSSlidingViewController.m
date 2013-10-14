@@ -679,6 +679,12 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     // We need to disable this bug correction during autorotation or content size adjustments, since scrollViewDidScroll
     // is called as the slidingScrollView updates it's layout for a new interfaceOrientation. ~ JTS.
     
+    if ([self.delegate respondsToSelector:@selector(slidingViewControllerIsOpening:progress:)]) {
+        
+        CGFloat progress = (1.0 - fabs((scrollView.contentOffset.x / self.sliderOpeningWidth)));
+        [self.delegate slidingViewControllerIsOpening:self progress:progress];
+    }
+    
     if (self.isOpen == NO && self.isAnimatingInterfaceOrientation == NO && self.isAdjustingContentSize == NO) {
         CGPoint co = scrollView.contentOffset;
         if (co.x != self.sliderOpeningWidth) {

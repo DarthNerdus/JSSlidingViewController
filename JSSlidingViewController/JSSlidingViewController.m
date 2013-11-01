@@ -155,6 +155,10 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     [self.frontViewController didMoveToParentViewController:self];
     
     [self didClose]; // Fixes VO bugs with the slider being closed at launch.
+
+    if (_shouldHideStatsuBarWhenOpen) {
+        [UIApplication sharedApplication].statusBarHidden = NO;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -598,6 +602,10 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         [self.delegate slidingViewControllerWillOpen:self];
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillOpenNotification object:self]];
+
+    if (_shouldHideStatsuBarWhenOpen) {
+        [UIApplication sharedApplication].statusBarHidden = YES;
+    }
 }
 
 - (void)didOpen {
@@ -628,6 +636,10 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         [self.delegate slidingViewControllerDidClose:self];
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerDidCloseNotification object:self]];
+
+    if (_shouldHideStatsuBarWhenOpen) {
+        [UIApplication sharedApplication].statusBarHidden = NO;
+    }
 }
 
 #pragma mark - Scroll View Delegate for the Sliding Scroll View

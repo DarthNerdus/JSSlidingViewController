@@ -108,6 +108,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
         _showsDropShadows = YES;
         _leftShadowImage = [UIImage imageNamed:@"frontViewControllerDropShadow.png"];
         _leftShadowWidth = JSSlidingViewControllerDropShadowImageWidth;
+        _shouldHideStatsuBarWhenOpen = NO;
         [self addObservations];
     }
     return self;

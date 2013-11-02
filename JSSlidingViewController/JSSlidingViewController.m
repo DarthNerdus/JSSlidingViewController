@@ -41,14 +41,14 @@
 
 #import "JSSlidingViewController.h"
 
-NSString *  const JSSlidingViewControllerWillOpenNotification               = @"JSSlidingViewControllerWillOpenNotification";
-NSString *  const JSSlidingViewControllerWillCloseNotification              = @"JSSlidingViewControllerWillCloseNotification";
-NSString *  const JSSlidingViewControllerDidOpenNotification                = @"JSSlidingViewControllerDidOpenNotification";
-NSString *  const JSSlidingViewControllerDidCloseNotification               = @"JSSlidingViewControllerDidCloseNotification";
-NSString *  const JSSlidingViewControllerWillBeginDraggingNotification      = @"JSSlidingViewControllerWillBeginDraggingNotification";
-CGFloat     const JSSlidingViewControllerDefaultVisibleFrontPortionWhenOpen = 58.0f;
-CGFloat     const JSSlidingViewControllerDropShadowImageWidth               = 20.0f;
-CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20.0f;
+NSString *const JSSlidingViewControllerWillOpenNotification = @"JSSlidingViewControllerWillOpenNotification";
+NSString *const JSSlidingViewControllerWillCloseNotification = @"JSSlidingViewControllerWillCloseNotification";
+NSString *const JSSlidingViewControllerDidOpenNotification = @"JSSlidingViewControllerDidOpenNotification";
+NSString *const JSSlidingViewControllerDidCloseNotification = @"JSSlidingViewControllerDidCloseNotification";
+NSString *const JSSlidingViewControllerWillBeginDraggingNotification = @"JSSlidingViewControllerWillBeginDraggingNotification";
+CGFloat const JSSlidingViewControllerDefaultVisibleFrontPortionWhenOpen = 58.0f;
+CGFloat const JSSlidingViewControllerDropShadowImageWidth = 20.0f;
+CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
 
 @implementation SlidingScrollView
 
@@ -77,19 +77,19 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
 
 @interface JSSlidingViewController () <UIScrollViewDelegate>
 
-@property (nonatomic, assign)               CGFloat                         sliderOpeningWidth;
-@property (nonatomic, assign)               CGFloat                         desiredVisiblePortionOfFrontViewWhenOpen;
-@property (nonatomic, strong)               UIButton *                      invisibleCloseSliderButton;
-@property (nonatomic, strong)               UIImageView *                   frontViewControllerDropShadow;
-@property (nonatomic, strong)               UIImageView *                   frontViewControllerDropShadow_right;
-@property (nonatomic, assign)               BOOL                            isAnimatingInterfaceOrientation;
-@property (nonatomic, assign, readwrite)    BOOL                            animating;
-@property (nonatomic, assign, readwrite)    BOOL                            isOpen;
-@property (nonatomic, assign, readwrite)    BOOL                            isAdjustingContentSize;
-@property (nonatomic, strong, readwrite)    UIViewController *              frontViewController;
-@property (nonatomic, strong, readwrite)    UIViewController *              backViewController;
-@property (nonatomic, strong, readwrite)    SlidingScrollView *             slidingScrollView;
-@property (nonatomic, strong)               UIInterpolatingMotionEffect *   motionEffect;
+@property(nonatomic, assign) CGFloat sliderOpeningWidth;
+@property(nonatomic, assign) CGFloat desiredVisiblePortionOfFrontViewWhenOpen;
+@property(nonatomic, strong) UIButton *invisibleCloseSliderButton;
+@property(nonatomic, strong) UIImageView *frontViewControllerDropShadow;
+@property(nonatomic, strong) UIImageView *frontViewControllerDropShadow_right;
+@property(nonatomic, assign) BOOL isAnimatingInterfaceOrientation;
+@property(nonatomic, assign, readwrite) BOOL animating;
+@property(nonatomic, assign, readwrite) BOOL isOpen;
+@property(nonatomic, assign, readwrite) BOOL isAdjustingContentSize;
+@property(nonatomic, strong, readwrite) UIViewController *frontViewController;
+@property(nonatomic, strong, readwrite) UIViewController *backViewController;
+@property(nonatomic, strong, readwrite) SlidingScrollView *slidingScrollView;
+@property(nonatomic, strong) UIInterpolatingMotionEffect *motionEffect;
 
 @end
 
@@ -142,18 +142,18 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     [super viewDidLoad];
     [self setupSlidingScrollView];
     CGRect frame = self.view.bounds;
-    
+
     self.backViewController.view.frame = frame;
     self.backViewController.view.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth;
     [self addChildViewController:self.backViewController];
     [self.view insertSubview:self.backViewController.view atIndex:0];
     [self.backViewController didMoveToParentViewController:self];
-    
+
     self.frontViewController.view.frame = CGRectMake(_sliderOpeningWidth, frame.origin.y, frame.size.width, frame.size.height);
     [self addChildViewController:self.frontViewController];
     [_slidingScrollView addSubview:self.frontViewController.view];
     [self.frontViewController didMoveToParentViewController:self];
-    
+
     [self didClose]; // Fixes VO bugs with the slider being closed at launch.
 
     if (_shouldHideStatsuBarWhenOpen) {
@@ -221,28 +221,28 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         targetOriginForSlidingScrollView = _sliderOpeningWidth;
     }
     [self setNewContentSize:CGSizeMake(frame.size.width + _sliderOpeningWidth, frame.size.height)];
-    
+
     if (self.showsDropShadows) {
         self.frontViewControllerDropShadow.hidden = NO;
         self.frontViewControllerDropShadow_right.hidden = NO;
         self.frontViewControllerDropShadow.frame = CGRectMake(_sliderOpeningWidth - _leftShadowWidth,
-                                                              0.0f,
-                                                              _leftShadowWidth,
-                                                              frame.size.height);
+                0.0f,
+                _leftShadowWidth,
+                frame.size.height);
         self.frontViewControllerDropShadow_right.frame = CGRectMake(_sliderOpeningWidth + frame.size.width,
-                                                                    0.0f,
-                                                                    _leftShadowWidth,
-                                                                    frame.size.height);
+                0.0f,
+                _leftShadowWidth,
+                frame.size.height);
     } else {
         self.frontViewControllerDropShadow.hidden = YES;
         self.frontViewControllerDropShadow_right.hidden = YES;
     }
-    
+
     _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
     _slidingScrollView.frame = CGRectMake(targetOriginForSlidingScrollView, 0, frame.size.width, frame.size.height);
     self.frontViewController.view.frame = CGRectMake(_sliderOpeningWidth, 0, frame.size.width, frame.size.height);
     self.invisibleCloseSliderButton.frame = CGRectMake(_sliderOpeningWidth, self.invisibleCloseSliderButton.frame.origin.y, _desiredVisiblePortionOfFrontViewWhenOpen, frame.size.height);
-    
+
     if (self.backViewController.view.superview == nil) {
         /*
          This code is what keeps the content size of the back view controller
@@ -281,14 +281,14 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
 
 - (void)statusBarFrameWillChange:(NSNotification *)notification {
     NSDictionary *dictionary = notification.userInfo;
-    
+
     CGRect targetStatusBarFrame = CGRectZero;
     NSValue *rectValue = [dictionary valueForKey:UIApplicationStatusBarFrameUserInfoKey];
     [rectValue getValue:&targetStatusBarFrame];
-    
+
     CGRect screenbounds = [[UIScreen mainScreen] bounds];
     CGFloat targetHeight = screenbounds.size.height - targetStatusBarFrame.size.height;
-    
+
     [UIView animateWithDuration:0.25f animations:^{
         [self updateContentSizeForViewHeight:targetHeight];
     }];
@@ -299,10 +299,10 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
 }
 
 - (void)updateContentSizeForViewHeight:(CGFloat)targetHeight {
-    
+
     // Adjust the content size for the sliding scroll to the new target height
     [self setNewContentSize:CGSizeMake(self.slidingScrollView.contentSize.width, targetHeight)];
-    
+
     // Manually fix the back vc's height if the view isn't visible.
     // If it's visible, auto-resizing will correct it.
     if (self.backViewController.view.superview == nil) {
@@ -310,7 +310,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         backvcframe.size.height = targetHeight;
         self.backViewController.view.frame = backvcframe;
     }
-    
+
     // Don't fix front vc. It'll get adjusted as the scroll view's content size changes,
     // as long as it has the right autoresizing mask (flexible height).
 
@@ -350,7 +350,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }
 }
 
-- (void)closeWithBouncyAnimation:(BOOL)animated completion:(void(^)(void))completion {
+- (void)closeWithBouncyAnimation:(BOOL)animated completion:(void (^)(void))completion {
     CGFloat duration1 = 0.0f;
     CGFloat duration2 = 0.0f;
     if (animated) {
@@ -361,16 +361,16 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
             duration2 = duration2 * 1.5f;
         }
     }
-    [UIView animateWithDuration: duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
+    [UIView animateWithDuration:duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect rect = _slidingScrollView.frame;
         rect.origin.x = -10.0f;
         _slidingScrollView.frame = rect;
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration: duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
+    }                completion:^(BOOL finished) {
+        [UIView animateWithDuration:duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
             CGRect rect = _slidingScrollView.frame;
             rect.origin.x = 0;
             _slidingScrollView.frame = rect;
-        } completion:^(BOOL finished2) {
+        }                completion:^(BOOL finished2) {
             if (self.invisibleCloseSliderButton) {
                 [self.invisibleCloseSliderButton removeFromSuperview];
                 self.invisibleCloseSliderButton = nil;
@@ -385,7 +385,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }];
 }
 
-- (void)closeWithSmoothAnimation:(BOOL)animated completion:(void(^)(void))completion {
+- (void)closeWithSmoothAnimation:(BOOL)animated completion:(void (^)(void))completion {
     CGFloat duration = 0;
     if (animated) {
         duration = 0.25f;
@@ -397,7 +397,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         CGRect rect = _slidingScrollView.frame;
         rect.origin.x = 0;
         _slidingScrollView.frame = rect;
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         if (self.invisibleCloseSliderButton) {
             [self.invisibleCloseSliderButton removeFromSuperview];
             self.invisibleCloseSliderButton = nil;
@@ -430,7 +430,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }
 }
 
-- (void)openWithBouncyAnimation:(BOOL)animated completion:(void(^)(void))completion {
+- (void)openWithBouncyAnimation:(BOOL)animated completion:(void (^)(void))completion {
     CGFloat duration1 = 0.0f;
     CGFloat duration2 = 0.0f;
     if (animated) {
@@ -441,16 +441,16 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
             duration2 = duration2 * 1.5f;
         }
     }
-    [UIView animateWithDuration:duration1  delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration  animations:^{
+    [UIView animateWithDuration:duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect aRect = _slidingScrollView.frame;
         aRect.origin.x = _sliderOpeningWidth + 10;
         _slidingScrollView.frame = aRect;
-    } completion:^(BOOL finished) {
-        [UIView animateWithDuration:duration2  delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
+    }                completion:^(BOOL finished) {
+        [UIView animateWithDuration:duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
             CGRect rect = _slidingScrollView.frame;
             rect.origin.x = _sliderOpeningWidth;
             _slidingScrollView.frame = rect;
-        } completion:^(BOOL finished2) {
+        }                completion:^(BOOL finished2) {
             if (self.invisibleCloseSliderButton == nil) {
                 [self addInvisibleButton];
             }
@@ -465,7 +465,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }];
 }
 
-- (void)openWithSmoothAnimation:(BOOL)animated completion:(void(^)(void))completion {
+- (void)openWithSmoothAnimation:(BOOL)animated completion:(void (^)(void))completion {
     CGFloat duration = 0.0f;
     if (animated) {
         duration = 0.25f;
@@ -473,11 +473,11 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
             duration = 0.4f;
         }
     }
-    [UIView animateWithDuration:duration  delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
+    [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect rect = _slidingScrollView.frame;
         rect.origin.x = _sliderOpeningWidth;
         _slidingScrollView.frame = rect;
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         if (self.invisibleCloseSliderButton == nil) {
             [self addInvisibleButton];
         }
@@ -487,7 +487,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         if (completion) {
             completion();
         }
-        
+
     }];
 }
 
@@ -549,7 +549,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }
     [UIView animateWithDuration:duration animations:^{
         newFrontViewController.view.alpha = 1.0f;
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         if (self.useParallaxMotionEffect) {
             [self removeParallaxMotionEffect];
         }
@@ -561,7 +561,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         if (self.useParallaxMotionEffect && self.isOpen) {
             [self addParallaxMotionEffect];
         }
-        if(completion) {
+        if (completion) {
             completion();
         }
     }];
@@ -580,13 +580,13 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }
     [UIView animateWithDuration:duration animations:^{
         _backViewController.view.alpha = 0.0f;
-    } completion:^(BOOL finished) {
+    }                completion:^(BOOL finished) {
         [_backViewController willMoveToParentViewController:nil];
         [_backViewController.view removeFromSuperview];
         [_backViewController removeFromParentViewController];
         [newBackViewController didMoveToParentViewController:self];
         _backViewController = newBackViewController;
-        if(completion) {
+        if (completion) {
             completion();
         }
     }];
@@ -603,8 +603,11 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillOpenNotification object:self]];
 
-    if (_shouldHideStatsuBarWhenOpen) {
-        [UIApplication sharedApplication].statusBarHidden = YES;
+    if (_shouldHideStatsuBarWhenOpen && ![UIApplication sharedApplication].statusBarHidden) {
+        [UIView animateWithDuration:.18f animations:^{;
+            [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
+        }];
+
     }
 }
 
@@ -626,6 +629,12 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         [self removeParallaxMotionEffect];
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillCloseNotification object:self]];
+
+    if (_shouldHideStatsuBarWhenOpen && [UIApplication sharedApplication].statusBarHidden) {
+        [UIView animateWithDuration:.18f animations:^{;
+            [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
+        }];
+    }
 }
 
 - (void)didClose {
@@ -636,16 +645,12 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
         [self.delegate slidingViewControllerDidClose:self];
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerDidCloseNotification object:self]];
-
-    if (_shouldHideStatsuBarWhenOpen) {
-        [UIApplication sharedApplication].statusBarHidden = NO;
-    }
 }
 
 #pragma mark - Scroll View Delegate for the Sliding Scroll View
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
+
     // BIG NASTY BUG IN iOS 6.x -- December 1, 2012 ~ JTS.
     // Under certain conditions, when nesting a table view inside of a scroll view,
     // as is frequently the case when using JSSlidingViewController,
@@ -654,13 +659,13 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     // best assumption we have is that the outer most scroll view (in our case the JSSlidingViewController's
     // slidingScrollView) does not "know" that it's scrolling (dragging/tracking methods aren't triggered
     // properly).
-    
+
     // What the Bug Looks Like ---
     // When scrolling a table view inside the slidingScrollView, the slider may pop open and closed about 1 to 20 pixels
     // while scrolling, but never fully opening all the way. It's unusual to say the least. It's very difficult to reproduce
     // if your table view controller is inside a UINavigationController with a visible nav bar. Hiding the navigation bar
     // seems to make the issue more prominent.
-    
+
     // How to Reproduce the Bug ---
     // 1) Nest a table view inside the slidingScrollView (it's okay if this tableview is inside of a UINavigationController).
     // 2) Present a full-screen modal view controller while the slider is closed.
@@ -668,23 +673,23 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     // 4) Begin scrolling again on the tableview, quickly, in a semi-diagonal swipe direction
     //    that is 90 percent vertical.
     // 5) Observe the left hand edge of the screen for the jittery open/close while scrolling.
-    
+
     // It's hard to reproduce, but trust me, it's there. I will follow up with Apple with a radar.
-    
+
     // The following code doesn't "fix" the bug per se, but it will at least
     // make sure that the back view controller is visible if the back view controller's view is
     // set to be removed from the hierarchy when the slider is closed.
-    
+
     // Note: December 9, 2012
     // We need to disable this bug correction during autorotation or content size adjustments, since scrollViewDidScroll
     // is called as the slidingScrollView updates it's layout for a new interfaceOrientation. ~ JTS.
-    
+
     if ([self.delegate respondsToSelector:@selector(slidingViewControllerIsOpening:progress:)]) {
-        
+
         CGFloat progress = (1.0 - fabs((scrollView.contentOffset.x / self.sliderOpeningWidth)));
         [self.delegate slidingViewControllerIsOpening:self progress:progress];
     }
-    
+
     if (self.isOpen == NO && self.isAnimatingInterfaceOrientation == NO && self.isAdjustingContentSize == NO) {
         CGPoint co = scrollView.contentOffset;
         if (co.x != self.sliderOpeningWidth) {
@@ -732,7 +737,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     if (_animating == NO) {
         CGPoint origin = self.frontViewController.view.frame.origin;
         origin = [_slidingScrollView convertPoint:origin toView:self.view];
-        if ( (origin.x >= _sliderOpeningWidth) && (scrollView.dragging == NO) ){
+        if ((origin.x >= _sliderOpeningWidth) && (scrollView.dragging == NO)) {
             if (self.invisibleCloseSliderButton == nil) {
                 [self addInvisibleButton];
             }
@@ -771,9 +776,9 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
+
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillBeginDraggingNotification object:self]];
-    
+
     if (_locked == NO) {
         if (_isOpen == YES) {
             CGRect rect = _slidingScrollView.frame;
@@ -816,20 +821,20 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     _animating = NO;
     _frontViewControllerHasOpenCloseNavigationBarButton = YES;
     _allowManualSliding = YES;
-    
+
     if (self.showsDropShadows) {
         self.frontViewControllerDropShadow = [[UIImageView alloc] initWithImage:self.leftShadowImage];
         self.frontViewControllerDropShadow.frame = CGRectMake(_sliderOpeningWidth - _leftShadowWidth,
-                                                              0.0f,
-                                                              _leftShadowWidth,
-                                                              _slidingScrollView.bounds.size.height);
+                0.0f,
+                _leftShadowWidth,
+                _slidingScrollView.bounds.size.height);
         [_slidingScrollView addSubview:self.frontViewControllerDropShadow];
-        
+
         self.frontViewControllerDropShadow_right = [[UIImageView alloc] initWithImage:self.leftShadowImage];
         self.frontViewControllerDropShadow_right.frame = CGRectMake(_sliderOpeningWidth + frame.size.width,
-                                                                    0.0f,
-                                                                    _leftShadowWidth,
-                                                                    _slidingScrollView.bounds.size.height);
+                0.0f,
+                _leftShadowWidth,
+                _slidingScrollView.bounds.size.height);
         self.frontViewControllerDropShadow_right.transform = CGAffineTransformMakeRotation(M_PI);
         [_slidingScrollView addSubview:self.frontViewControllerDropShadow_right];
     }
@@ -952,7 +957,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     if (self.frontViewController != nil) {
         return self.frontViewController;
     }
-    
+
     return nil;
 }
 
@@ -961,7 +966,7 @@ CGFloat     const JSSlidingViewControllerMotionEffectMinMaxRelativeValue    = 20
     if (self.frontViewController != nil) {
         return self.frontViewController;
     }
-    
+
     return nil;
 }
 

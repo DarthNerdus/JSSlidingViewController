@@ -147,6 +147,10 @@ extern  CGFloat      const JSSlidingViewControllerDropShadowImageWidth;
 // UIViewControllerBasedStatusBarAppearance key to be set to FALSE in your Info.plist.
 @property (nonatomic, assign) BOOL shouldHideStatusBarWhenOpen;
 
+// @property (nonatomic, assign) BOOL revealFromRight;
+// Set this to YES if you want the backViewController to be revealed from the right.
+@property (nonatomic, assign) BOOL revealFromRight;
+
 // @property (nonatomic, assign, readonly) BOOL animating;
 // Returns YES if the slider is animating open or shut.
 @property (nonatomic, assign, readonly) BOOL animating;

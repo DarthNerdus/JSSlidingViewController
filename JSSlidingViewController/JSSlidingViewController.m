@@ -239,9 +239,15 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
         self.frontViewControllerDropShadow_right.hidden = YES;
     }
 
-    _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
-    _slidingScrollView.frame = CGRectMake(targetOriginForSlidingScrollView, 0, frame.size.width, frame.size.height);
-    self.frontViewController.view.frame = CGRectMake(_sliderOpeningWidth, 0, frame.size.width, frame.size.height);
+    if (self.revealFromRight) {
+        _slidingScrollView.contentOffset = CGPointMake(0, 0);
+        _slidingScrollView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+        self.frontViewController.view.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    } else {
+        _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        _slidingScrollView.frame = CGRectMake(targetOriginForSlidingScrollView, 0, frame.size.width, frame.size.height);
+        self.frontViewController.view.frame = CGRectMake(_sliderOpeningWidth, 0, frame.size.width, frame.size.height);
+    }
     self.invisibleCloseSliderButton.frame = CGRectMake(_sliderOpeningWidth, self.invisibleCloseSliderButton.frame.origin.y, _desiredVisiblePortionOfFrontViewWhenOpen, frame.size.height);
 
     if (self.backViewController.view.superview == nil) {
@@ -364,13 +370,21 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [UIView animateWithDuration:duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect rect = _slidingScrollView.frame;
-        rect.origin.x = -10.0f;
+        if (self.revealFromRight) {
+            rect.origin.x = 320.0f - _desiredVisiblePortionOfFrontViewWhenOpen + 10.0f;
+        } else {
+            rect.origin.x = -10.0f;
+        }
+
         _slidingScrollView.frame = rect;
     }                completion:^(BOOL finished) {
         [UIView animateWithDuration:duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
             CGRect rect = _slidingScrollView.frame;
             rect.origin.x = 0;
             _slidingScrollView.frame = rect;
+            if (self.revealFromRight) {
+                _slidingScrollView.contentOffset = CGPointMake(0, 0);
+            }
         }                completion:^(BOOL finished2) {
             if (self.invisibleCloseSliderButton) {
                 [self.invisibleCloseSliderButton removeFromSuperview];
@@ -444,12 +458,12 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [UIView animateWithDuration:duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect aRect = _slidingScrollView.frame;
-        aRect.origin.x = _sliderOpeningWidth + 10;
+        aRect.origin.x = (_sliderOpeningWidth + 10) * [self _horizontalTransformation];
         _slidingScrollView.frame = aRect;
     }                completion:^(BOOL finished) {
         [UIView animateWithDuration:duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
             CGRect rect = _slidingScrollView.frame;
-            rect.origin.x = _sliderOpeningWidth;
+            rect.origin.x = _sliderOpeningWidth * [self _horizontalTransformation];
             _slidingScrollView.frame = rect;
         }                completion:^(BOOL finished2) {
             if (self.invisibleCloseSliderButton == nil) {
@@ -476,7 +490,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [UIView animateWithDuration:duration delay:0 options:UIViewAnimationOptionCurveEaseInOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect rect = _slidingScrollView.frame;
-        rect.origin.x = _sliderOpeningWidth;
+        rect.origin.x = _sliderOpeningWidth * [self _horizontalTransformation];
         _slidingScrollView.frame = rect;
     }                completion:^(BOOL finished) {
         if (self.invisibleCloseSliderButton == nil) {
@@ -608,7 +622,6 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
         [UIView animateWithDuration:.18f animations:^{;
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
         }];
-
     }
 }
 
@@ -693,7 +706,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
 
     if (self.isOpen == NO && self.isAnimatingInterfaceOrientation == NO && self.isAdjustingContentSize == NO) {
         CGPoint co = scrollView.contentOffset;
-        if (co.x != self.sliderOpeningWidth) {
+        if (co.x != self.sliderOpeningWidth && co.x != 0) {
             [self scrollViewWillBeginDragging:scrollView];
             [self willOpen];
             _isOpen = YES;
@@ -738,12 +751,22 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     if (_animating == NO) {
         CGPoint origin = self.frontViewController.view.frame.origin;
         origin = [_slidingScrollView convertPoint:origin toView:self.view];
-        if ((origin.x >= _sliderOpeningWidth) && (scrollView.dragging == NO)) {
+        BOOL opened;
+        if (self.revealFromRight) {
+            opened = (origin.x <= -_sliderOpeningWidth) && !scrollView.dragging;
+        } else {
+            opened = (origin.x >= _sliderOpeningWidth) && !scrollView.dragging;
+        }
+        if (opened) {
             if (self.invisibleCloseSliderButton == nil) {
                 [self addInvisibleButton];
             }
             CGRect rect = _slidingScrollView.frame;
-            rect.origin.x = _sliderOpeningWidth;
+            if (self.revealFromRight) {
+                rect.origin.x = 0;
+            } else {
+                rect.origin.x = _sliderOpeningWidth;
+            }
             _slidingScrollView.frame = rect;
             _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
             _isOpen = YES;
@@ -813,7 +836,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     CGRect frame = self.view.bounds;
     [self setWidthOfVisiblePortionOfFrontViewControllerWhenSliderIsOpen:JSSlidingViewControllerDefaultVisibleFrontPortionWhenOpen];
     self.slidingScrollView = [[SlidingScrollView alloc] initWithFrame:frame];
-    _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+    if (self.revealFromRight) {
+        _slidingScrollView.contentOffset = CGPointMake(-_sliderOpeningWidth, 0);
+    } else {
+        _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+    }
     [self setNewContentSize:CGSizeMake(frame.size.width + _sliderOpeningWidth, frame.size.height)];
     _slidingScrollView.delegate = self;
     [self.view insertSubview:_slidingScrollView atIndex:0];
@@ -858,7 +885,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     if (_frontViewControllerHasOpenCloseNavigationBarButton) {
         yOrigin = 44.0f;
     }
-    self.invisibleCloseSliderButton.frame = CGRectMake(self.frontViewController.view.frame.origin.x, yOrigin, _desiredVisiblePortionOfFrontViewWhenOpen, self.view.frame.size.height - yOrigin);
+    if (self.revealFromRight) {
+        self.invisibleCloseSliderButton.frame = CGRectMake(self.frontViewController.view.frame.origin.x + _sliderOpeningWidth, yOrigin, _desiredVisiblePortionOfFrontViewWhenOpen, self.view.frame.size.height - yOrigin);
+    } else {
+        self.invisibleCloseSliderButton.frame = CGRectMake(self.frontViewController.view.frame.origin.x, yOrigin, _desiredVisiblePortionOfFrontViewWhenOpen, self.view.frame.size.height - yOrigin);
+    }
     self.invisibleCloseSliderButton.backgroundColor = [UIColor clearColor];
     self.invisibleCloseSliderButton.isAccessibilityElement = YES;
     self.invisibleCloseSliderButton.accessibilityLabel = self.localizedAccessibilityLabelForInvisibleCloseSliderButton;
@@ -971,6 +1002,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     return nil;
 }
 
+#pragma mark - Reveal from Right
+
+- (float)_horizontalTransformation {
+    return self.revealFromRight ? -1.f : 1.f;
+}
 @end
 
 

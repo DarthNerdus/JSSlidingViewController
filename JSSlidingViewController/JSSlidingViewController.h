@@ -141,11 +141,11 @@ extern  CGFloat      const JSSlidingViewControllerDropShadowImageWidth;
 // Defaults to NO. Future versions of JSSlidingViewController may enabled this property by default.
 @property (nonatomic, assign) BOOL shouldTemporarilyRemoveBackViewControllerWhenClosed;
 
-// @property (nonatomic, assign) BOOL shouldHideStatsuBarWhenOpen;
+// @property (nonatomic, assign) BOOL shouldHideStatusBarWhenOpen;
 // Set this to YES if you want to hide the status system status bar when the slider begins opening
 // and re-enabled the status bar when the slider completes closing. This requires the
 // UIViewControllerBasedStatusBarAppearance key to be set to FALSE in your Info.plist.
-@property (nonatomic, assign) BOOL shouldHideStatsuBarWhenOpen;
+@property (nonatomic, assign) BOOL shouldHideStatusBarWhenOpen;
 
 // @property (nonatomic, assign, readonly) BOOL animating;
 // Returns YES if the slider is animating open or shut.

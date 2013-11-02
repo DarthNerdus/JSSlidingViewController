@@ -108,7 +108,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
         _showsDropShadows = YES;
         _leftShadowImage = [UIImage imageNamed:@"frontViewControllerDropShadow.png"];
         _leftShadowWidth = JSSlidingViewControllerDropShadowImageWidth;
-        _shouldHideStatsuBarWhenOpen = NO;
+        _shouldHideStatusBarWhenOpen = NO;
         [self addObservations];
     }
     return self;
@@ -157,7 +157,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
 
     [self didClose]; // Fixes VO bugs with the slider being closed at launch.
 
-    if (_shouldHideStatsuBarWhenOpen) {
+    if (_shouldHideStatusBarWhenOpen) {
         [UIApplication sharedApplication].statusBarHidden = NO;
     }
 }
@@ -604,7 +604,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillOpenNotification object:self]];
 
-    if (_shouldHideStatsuBarWhenOpen && ![UIApplication sharedApplication].statusBarHidden) {
+    if (_shouldHideStatusBarWhenOpen && ![UIApplication sharedApplication].statusBarHidden) {
         [UIView animateWithDuration:.18f animations:^{;
             [[UIApplication sharedApplication] setStatusBarHidden:YES withAnimation:UIStatusBarAnimationSlide];
         }];
@@ -631,7 +631,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [[NSNotificationCenter defaultCenter] postNotification:[NSNotification notificationWithName:JSSlidingViewControllerWillCloseNotification object:self]];
 
-    if (_shouldHideStatsuBarWhenOpen && [UIApplication sharedApplication].statusBarHidden) {
+    if (_shouldHideStatusBarWhenOpen && [UIApplication sharedApplication].statusBarHidden) {
         [UIView animateWithDuration:.18f animations:^{;
             [[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationSlide];
         }];

@@ -370,12 +370,7 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
     }
     [UIView animateWithDuration:duration1 delay:0 options:UIViewAnimationOptionCurveEaseOut | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
         CGRect rect = _slidingScrollView.frame;
-        if (self.revealFromRight) {
-            rect.origin.x = 320.0f - _desiredVisiblePortionOfFrontViewWhenOpen + 10.0f;
-        } else {
-            rect.origin.x = -10.0f;
-        }
-
+        rect.origin.x = -10.0f * [self _horizontalTransformation];
         _slidingScrollView.frame = rect;
     }                completion:^(BOOL finished) {
         [UIView animateWithDuration:duration2 delay:0 options:UIViewAnimationOptionCurveEaseIn | UIViewAnimationOptionOverrideInheritedCurve | UIViewAnimationOptionOverrideInheritedDuration animations:^{
@@ -417,7 +412,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
             [self.invisibleCloseSliderButton removeFromSuperview];
             self.invisibleCloseSliderButton = nil;
         }
-        _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        if (self.revealFromRight) {
+            _slidingScrollView.contentOffset = CGPointMake(0, 0);
+        } else {
+            _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        }
         _animating = NO;
         self.view.userInteractionEnabled = YES;
         [self didClose];
@@ -763,12 +762,16 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
             }
             CGRect rect = _slidingScrollView.frame;
             if (self.revealFromRight) {
-                rect.origin.x = 0;
+                rect.origin.x = -_sliderOpeningWidth;
             } else {
                 rect.origin.x = _sliderOpeningWidth;
             }
             _slidingScrollView.frame = rect;
-            _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+            if (self.revealFromRight) {
+                _slidingScrollView.contentOffset = CGPointMake(0, 0);
+            } else {
+                _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+            }
             _isOpen = YES;
         } else {
             if (self.invisibleCloseSliderButton) {
@@ -790,7 +793,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
         CGRect rect = _slidingScrollView.frame;
         rect.origin.x = 0;
         _slidingScrollView.frame = rect;
-        _slidingScrollView.contentOffset = CGPointMake(0, 0);
+        if (self.revealFromRight) {
+            _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        } else {
+            _slidingScrollView.contentOffset = CGPointMake(0, 0);
+        }
         if (self.invisibleCloseSliderButton) {
             [self.invisibleCloseSliderButton removeFromSuperview];
             self.invisibleCloseSliderButton = nil;
@@ -808,7 +815,11 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
             CGRect rect = _slidingScrollView.frame;
             rect.origin.x = 0;
             _slidingScrollView.frame = rect;
-            _slidingScrollView.contentOffset = CGPointMake(0, 0);
+            if (self.revealFromRight) {
+                _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+            } else {
+                _slidingScrollView.contentOffset = CGPointMake(0, 0);
+            }
             if (self.invisibleCloseSliderButton) {
                 [self.invisibleCloseSliderButton removeFromSuperview];
                 self.invisibleCloseSliderButton = nil;
@@ -823,9 +834,17 @@ CGFloat const JSSlidingViewControllerMotionEffectMinMaxRelativeValue = 20.0f;
             [self addInvisibleButton];
         }
         CGRect rect = _slidingScrollView.frame;
-        rect.origin.x = _sliderOpeningWidth;
+        if (self.revealFromRight) {
+            rect.origin.x = -_sliderOpeningWidth;
+        } else {
+            rect.origin.x = _sliderOpeningWidth;
+        }
         _slidingScrollView.frame = rect;
-        _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        if (self.revealFromRight) {
+            _slidingScrollView.contentOffset = CGPointMake(0, 0);
+        } else {
+            _slidingScrollView.contentOffset = CGPointMake(_sliderOpeningWidth, 0);
+        }
     }
     [super touchesEnded:touches withEvent:event];
 }
